@@ -13,11 +13,6 @@ import cv2  # OpenCVをインポート
 # タイトルとテキストを記入
 st.title('犬猫判別アプリケーション')
 
-# サイドバーに設定メニューを追加
-# st.sidebar.title("設定")
-# gradcam_layer = st.sidebar.selectbox("Grad-CAMレイヤー", ["layer4"])
-# confidence_threshold = st.sidebar.slider("確信度の閾値", 0, 100, 50)
-
 # 画像の前処理
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
@@ -46,16 +41,6 @@ class ResNetLightning(nn.Module):
 def load_model(model_path):
     return torch.load(model_path, map_location=torch.device('cpu'))
 
-# 画像を判定する関数
-# def predict_image(model, image):
-#     image = transform(image).unsqueeze(0)
-#     with torch.no_grad():
-#         outputs = model(image)
-#         _, predicted = torch.max(outputs, 1)       
-#         print(predicted)
-#     label = "猫" if predicted.item() == 0 else "犬"
-#     return label
-
 def predict_image(model, image):
     image = transform(image).unsqueeze(0)
     with torch.no_grad():
@@ -73,31 +58,11 @@ def predict_image(model, image):
         
     return label, confidence_percentage
 
-# 画像にGrad-CAMを適用する関数
-# def apply_gradcam(model, image):
-#     image_tensor = transform(image).unsqueeze(0)
-#     gradcam = GradCAM(model, target_layer=model.feature.layer4)
-#     mask, _ = gradcam(image_tensor)
-#     heatmap = (mask.detach().numpy().transpose(0, 2, 3, 1)).astype(np.float32)
-#     heatmap = np.uint8(255 * heatmap)
 
-#     # ヒートマップをカラーマップに適用
-#     heatmap_color = cv2.applyColorMap(heatmap[0], cv2.COLORMAP_JET)
-
-#     # 元の画像をNumPy配列に変換
-#     original_image = np.array(image)
-#     original_image = cv2.resize(original_image, (224, 224))
-
-#     # 元の画像とヒートマップをブレンド
-#     blended = cv2.addWeighted(original_image, 0.5, heatmap_color, 0.5, 0)
-
-#     return blended
 
 def apply_gradcam(model, image):
     image_tensor = transform(image).unsqueeze(0)
-    #gradcam = GradCAM(model, target_layer=model.layer4[-1])  # ResNet18の最終的な畳み込み層を指定
-    #gradcam = GradCAM(model, target_layer=model.layer4[-1])  # ResNet18の最終的な畳み込み層を指定
-    #gradcam = GradCAM(model.feature, target_layer=model.feature.layer4[-1])
+
     gradcam = GradCAM(model.feature, target_layer=model.feature.layer4[-1])  # ResNet18の最終的な畳み込み層を指定
 
     mask, _ = gradcam(image_tensor)
@@ -105,8 +70,6 @@ def apply_gradcam(model, image):
     heatmap = np.uint8(255 * heatmap)
 
     # ヒートマップをカラーマップに適用
-    #heatmap_color = cv2.applyColorMap(heatmap[0], cv2.COLORMAP_JET)
-    # ヒートマップをカラーマップに適用（赤と青を逆にする）
     heatmap_color = cv2.applyColorMap(255 - heatmap[0], cv2.COLORMAP_JET)
 
     # 元の画像をNumPy配列に変換
