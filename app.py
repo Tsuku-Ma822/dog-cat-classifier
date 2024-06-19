@@ -22,7 +22,6 @@ transform = transforms.Compose([
 
 # ネットワークの定義
 class ResNetLightning(nn.Module):
-#class ResNetLightning(pl.LightningModule):
     def __init__(self):
         super().__init__()
         self.feature = resnet18(pretrained=True)
