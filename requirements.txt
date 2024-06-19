@@ -4,4 +4,4 @@ torchvision
 pillow
 numpy
 opencv-python
-gradcam
+git+https://github.com/jacobgil/pytorch-grad-cam.git
