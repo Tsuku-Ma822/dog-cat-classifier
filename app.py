@@ -5,10 +5,12 @@ import torch.nn as nn
 import torchvision.transforms as transforms
 from PIL import Image
 from torchvision.models import resnet18
-from gradcam import GradCAM
+from pytorch_grad_cam import GradCAM
 import pytorch_lightning as pl
 from torchmetrics.functional import accuracy
 import cv2  # OpenCVをインポート
+
+
 
 # タイトルとテキストを記入
 st.title('犬猫判別アプリケーション')
