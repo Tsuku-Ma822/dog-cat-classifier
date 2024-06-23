@@ -110,3 +110,4 @@ if uploaded_image is not None:
     col1.image(image, caption='アップロードした画像', use_column_width=True)
     # 右のカラムにGrad-CAMの結果を表示
     col2.image(heatmap, caption='Grad-CAMを適応した画像', use_column_width=True)
+
